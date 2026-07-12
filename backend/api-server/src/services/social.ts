@@ -1,5 +1,9 @@
-// Business logic for the social module lives here; routes stay thin.
-// Stub until the module is wired to real tables.
-export function getModuleStatus() {
-  return { module: "social", status: "stub" } as const;
+import { db, challengeParticipationsTable, employeesTable } from "@workspace/db";
+
+export async function getCSRParticipations() {
+  return db.select().from(challengeParticipationsTable);
+}
+
+export async function getEmployees() {
+  return db.select().from(employeesTable);
 }

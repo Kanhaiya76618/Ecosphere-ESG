@@ -5,6 +5,7 @@ import {
   ReactNode,
   useEffect,
 } from 'react';
+import { api } from '@/lib/api';
 import type {
   EcoSphereState,
   Department,
@@ -328,7 +329,8 @@ type Action =
   | { type: 'RUN_OVERDUE_CHECK' }
   | { type: 'UPDATE_POLICY';        payload: Pick<ESGPolicy, 'id'> & Partial<ESGPolicy> & { triggerReminder?: boolean } }
   | { type: 'ADD_AUDIT';            payload: Omit<Audit, 'id' | 'status' | 'reportFile' | 'createdAt' | 'updatedAt' | 'deletedAt'> }
-  | { type: 'COMPLETE_AUDIT';       payload: { auditId: string; score: string; reportFile: string; findings: string; departmentId: string; departmentName: string } };
+  | { type: 'COMPLETE_AUDIT';       payload: { auditId: string; score: string; reportFile: string; findings: string; departmentId: string; departmentName: string } }
+  | { type: 'INITIALIZE_STATE';     payload: Partial<EcoSphereState> };
 
 // ── Reducer ───────────────────────────────────────────────────────────────────
 
@@ -351,6 +353,12 @@ function reducer(state: EcoSphereState, action: Action): EcoSphereState {
   const ts = new Date().toISOString().slice(0, 10);
 
   switch (action.type) {
+    case 'INITIALIZE_STATE':
+      return {
+        ...state,
+        ...action.payload,
+      };
+
     case 'ADD_DEPARTMENT':
       return {
         ...state,
@@ -1056,12 +1064,157 @@ const STATIC_GOV_SCORES: Record<string, number> = {
 export function EcoSphereProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
-  // Trigger overdue checks periodically (Prompt 3 stub cron job)
+  const customDispatch = (action: Action) => {
+    dispatch(action);
+
+    // Asynchronously persist modification actions to the backend database
+    (async () => {
+      try {
+        const translateToDbDeptId = (id: string) => {
+          if (id === 'dept-it') return 4;
+          if (id === 'dept-hr') return 5;
+          if (id === 'dept-log') return 6;
+          return parseInt(id) || 4;
+        };
+
+        if (action.type === 'ADD_TRANSACTION') {
+          const payload = action.payload;
+          await fetch('/api/environmental/transactions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fuelTypeId: payload.fuelTypeId,
+              fuelType: payload.fuelType,
+              departmentId: translateToDbDeptId(payload.departmentId),
+              quantity: payload.quantity,
+              calculatedTco2e: (payload.quantity * payload.emissionFactor.co2eFactor) / 1000,
+              limit: payload.limit,
+              deadline: payload.deadline,
+              status: 'On Track',
+              sourceType: 'Manual',
+              progress: Math.round(((payload.quantity * payload.emissionFactor.co2eFactor / 1000) / (payload.limit || 1)) * 10000) / 100,
+            }),
+          });
+        } else if (action.type === 'ADD_COMPLIANCE_ISSUE') {
+          const payload = action.payload;
+          await fetch('/api/governance/issues', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: payload.title,
+              severity: payload.severity,
+              departmentId: translateToDbDeptId(payload.departmentId),
+              dueDate: payload.dueDate,
+              ownerId: 1, // Default owner ID
+              description: payload.description,
+              status: 'Open',
+              isOverdue: false,
+              relatedAuditId: payload.relatedAuditId ? parseInt(payload.relatedAuditId.replace('aud-', '')) : null,
+            }),
+          });
+        } else if (action.type === 'ADD_AUDIT') {
+          const payload = action.payload;
+          await fetch('/api/governance/audits', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: payload.title,
+              date: payload.date,
+              auditor: payload.auditor,
+              score: payload.score || '-',
+              status: 'Pending',
+              reportFile: null,
+            }),
+          });
+        }
+      } catch (err) {
+        console.error("Failed to persist action in background database:", err);
+      }
+    })();
+  };
+
+  // Trigger overdue checks periodically (Prompt 3 stub cron job) and sync live database state
   useEffect(() => {
     dispatch({ type: 'RUN_OVERDUE_CHECK' });
     const timer = setInterval(() => {
       dispatch({ type: 'RUN_OVERDUE_CHECK' });
     }, 60000); // scan issues every minute
+
+    async function loadData() {
+      try {
+        const [depts, txs, goals, policies, acks, audits, issues, emps] = await Promise.all([
+          api.departments(),
+          fetch('/api/environmental/transactions').then(r => r.json()),
+          fetch('/api/environmental/goals').then(r => r.json()),
+          fetch('/api/governance/policies').then(r => r.json()),
+          fetch('/api/governance/policy-acknowledgements').then(r => r.json()),
+          fetch('/api/governance/audits').then(r => r.json()),
+          fetch('/api/governance/issues').then(r => r.json()),
+          api.employees(),
+        ]);
+
+        const translateDeptId = (id: number | string) => {
+          const idStr = id.toString();
+          if (idStr === '1' || idStr === '4' || idStr === 'dept-it') return 'dept-it';
+          if (idStr === '2' || idStr === '5' || idStr === 'dept-hr') return 'dept-hr';
+          if (idStr === '3' || idStr === '6' || idStr === 'dept-log') return 'dept-log';
+          return idStr;
+        };
+
+        dispatch({
+          type: 'INITIALIZE_STATE',
+          payload: {
+            departments: depts.map(d => ({
+              ...d,
+              id: translateDeptId(d.id),
+              employeeCount: d.employees,
+              score: d.score,
+              head: d.head || 'Unassigned',
+            })) as any,
+            carbonTransactions: txs.map((t: any) => ({
+              ...t,
+              id: `tx-${t.id}`,
+              departmentId: translateDeptId(t.departmentId),
+            })),
+            environmentalGoals: goals.map((g: any) => ({
+              ...g,
+              id: `sg-${g.id}`,
+              departmentId: g.departmentId ? translateDeptId(g.departmentId) : null,
+            })),
+            esgPolicies: policies.map((p: any) => ({
+              ...p,
+              id: `pol-${p.id}`,
+            })),
+            policyAcknowledgements: acks.map((a: any) => ({
+              ...a,
+              id: `ack-${a.id}`,
+              policyId: `pol-${a.policyId}`,
+              employeeId: `emp-${a.employeeId}`,
+            })),
+            audits: audits.map((a: any) => ({
+              ...a,
+              id: `aud-${a.id}`,
+            })),
+            complianceIssues: issues.map((c: any) => ({
+              ...c,
+              id: `iss-${c.id}`,
+              departmentId: translateDeptId(c.departmentId),
+              ownerId: `emp-${c.ownerId}`,
+              relatedAuditId: c.relatedAuditId ? `aud-${c.relatedAuditId}` : null,
+            })),
+            employees: emps.map((e: any) => ({
+              ...e,
+              id: `emp-${e.id}`,
+              departmentId: translateDeptId(e.departmentId),
+            })),
+          }
+        });
+      } catch (err) {
+        console.warn("Failed to load live database state, falling back to client-side mocks:", err);
+      }
+    }
+    loadData();
+
     return () => clearInterval(timer);
   }, []);
 
@@ -1165,7 +1318,7 @@ export function EcoSphereProvider({ children }: { children: ReactNode }) {
 
   const value: EcoSphereContextValue = {
     state,
-    dispatch,
+    dispatch: customDispatch,
     activeTransactions: activeTxs,
     activeFactors,
     activeDepartments: dynamicDepartments,

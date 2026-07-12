@@ -201,4 +201,27 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(body),
     }),
+
+  // Dashboard Endpoints
+  esgSummary: (departmentId?: number) =>
+    request<{
+      environmental: number;
+      environmentalChange: number;
+      social: number;
+      socialChange: number;
+      governance: number;
+      governanceChange: number;
+      overall: number;
+      overallChange: number;
+    }>(`/dashboard/summary${departmentId ? `?departmentId=${departmentId}` : ''}`),
+  esgHistory: (departmentId?: number) =>
+    request<any[]>(`/dashboard/history${departmentId ? `?departmentId=${departmentId}` : ''}`),
+  departmentScores: () => request<any[]>('/dashboard/departments'),
+  recentTransactions: () => request<any[]>('/dashboard/transactions'),
+  saveESGConfig: (body: { envWeight: number; socWeight: number; govWeight: number }) =>
+    request<{ success: boolean }>('/dashboard/config', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  getESGConfig: () => request<{ id: number; envWeight: number; socWeight: number; govWeight: number }>('/dashboard/config'),
 };
