@@ -28,7 +28,7 @@ export default function Social() {
             <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Social & CSR</h2>
             <p className="text-gray-500 text-sm mt-1">Manage corporate social responsibility initiatives and employee engagement.</p>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-[#0284c7] hover:bg-sky-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm">
+          <button className="flex items-center gap-2 px-4 py-2 bg-[#be185d] hover:bg-rose-800 text-white rounded-lg text-sm font-medium transition-colors shadow-sm">
             <Heart className="w-4 h-4" />
             Create Campaign
           </button>
@@ -36,21 +36,21 @@ export default function Social() {
 
         <Tabs defaultValue="activities" className="w-full mt-8">
           <TabsList className="bg-gray-100 rounded-xl p-1 inline-flex">
-            <TabsTrigger value="activities" className="rounded-lg px-4 py-1.5 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-[#0284c7] data-[state=active]:shadow-sm transition-all">CSR Activities</TabsTrigger>
-            <TabsTrigger value="approvals" className="rounded-lg px-4 py-1.5 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-[#0284c7] data-[state=active]:shadow-sm transition-all flex items-center gap-2">
+            <TabsTrigger value="activities" className="rounded-lg px-4 py-1.5 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-[#be185d] data-[state=active]:shadow-sm transition-all">CSR Activities</TabsTrigger>
+            <TabsTrigger value="approvals" className="rounded-lg px-4 py-1.5 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-[#be185d] data-[state=active]:shadow-sm transition-all flex items-center gap-2">
               Approvals 
-              <span className="bg-sky-100 text-sky-700 text-[10px] px-2 py-0.5 rounded-full font-bold">4</span>
+              <span className="bg-rose-100 text-rose-700 text-[10px] px-2 py-0.5 rounded-full font-bold">4</span>
             </TabsTrigger>
-            <TabsTrigger value="diversity" className="rounded-lg px-4 py-1.5 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-[#0284c7] data-[state=active]:shadow-sm transition-all">Diversity & Inclusion</TabsTrigger>
+            <TabsTrigger value="diversity" className="rounded-lg px-4 py-1.5 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-[#be185d] data-[state=active]:shadow-sm transition-all">Diversity & Inclusion</TabsTrigger>
           </TabsList>
           
           <TabsContent value="activities" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {CSR_ACTIVITIES.map((activity, i) => (
                 <motion.div key={activity.id} variants={item} custom={i}>
-                  <div className="bg-white rounded-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)] overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow group border border-transparent hover:border-sky-100">
+                  <div className="bg-white rounded-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)] overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow group border border-transparent hover:border-rose-100">
                     <div className={`h-2 w-full ${
-                      activity.status === 'Active' ? 'bg-[#0284c7]' :
+                      activity.status === 'Active' ? 'bg-[#be185d]' :
                       activity.status === 'Completed' ? 'bg-[#16a34a]' :
                       'bg-gray-300'
                     }`}></div>
@@ -58,7 +58,7 @@ export default function Social() {
                     <div className="p-6 flex-1 flex flex-col">
                       <div className="flex justify-between items-start mb-4">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                          activity.status === 'Active' ? 'bg-sky-50 text-sky-700 border-sky-200' :
+                          activity.status === 'Active' ? 'bg-rose-50 text-rose-700 border-rose-200' :
                           activity.status === 'Completed' ? 'bg-green-50 text-green-700 border-green-200' :
                           'bg-gray-100 text-gray-600 border-gray-200'
                         }`}>
@@ -66,7 +66,7 @@ export default function Social() {
                         </span>
                       </div>
                       
-                      <h3 className="text-lg font-bold text-gray-900 mb-4 group-hover:text-[#0284c7] transition-colors">{activity.title}</h3>
+                      <h3 className="text-lg font-bold text-gray-900 mb-4 group-hover:text-[#be185d] transition-colors">{activity.title}</h3>
                       
                       <div className="flex flex-col gap-3 text-sm text-gray-600 mb-6 flex-1">
                         <div className="flex items-center gap-2.5">
@@ -78,8 +78,8 @@ export default function Social() {
                           <span>{activity.participants} Participants Confirmed</span>
                         </div>
                         <div className="flex items-center gap-2.5">
-                          <Award className="w-4 h-4 text-sky-500" />
-                          <span className="text-sky-700 font-medium">{activity.points} Points available</span>
+                          <Award className="w-4 h-4 text-rose-400" />
+                          <span className="text-rose-700 font-medium">{activity.points} Points available</span>
                         </div>
                       </div>
 
@@ -90,11 +90,11 @@ export default function Social() {
                               U{j}
                             </div>
                           ))}
-                          <div className="w-8 h-8 rounded-full border-2 border-white bg-sky-50 text-sky-700 flex items-center justify-center text-xs font-semibold">
+                          <div className="w-8 h-8 rounded-full border-2 border-white bg-rose-50 text-rose-700 flex items-center justify-center text-xs font-semibold">
                             +{activity.participants - 3}
                           </div>
                         </div>
-                        <button className="text-sm font-semibold text-[#0284c7] hover:text-sky-800 transition-colors">
+                        <button className="text-sm font-semibold text-[#be185d] hover:text-rose-800 transition-colors">
                           View Details
                         </button>
                       </div>
@@ -128,7 +128,7 @@ export default function Social() {
                       <tr key={approval.id} className="hover:bg-gray-50/80 transition-colors bg-white">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-xs">
+                            <div className="w-8 h-8 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-xs">
                               {approval.employee.split(' ').map(n => n[0]).join('')}
                             </div>
                             <span className="font-semibold text-gray-900">{approval.employee}</span>
@@ -136,7 +136,7 @@ export default function Social() {
                         </td>
                         <td className="px-6 py-4 text-gray-600">{approval.challenge}</td>
                         <td className="px-6 py-4">
-                          <a href="#" className="text-sky-600 hover:text-sky-800 hover:underline flex items-center gap-1.5 font-medium text-xs">
+                          <a href="#" className="text-rose-600 hover:text-rose-800 hover:underline flex items-center gap-1.5 font-medium text-xs">
                             <MapPin className="w-3.5 h-3.5" />
                             {approval.proof}
                           </a>
@@ -173,8 +173,8 @@ export default function Social() {
           
           <TabsContent value="diversity" className="mt-6">
             <div className="bg-white rounded-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)] p-16 flex flex-col items-center justify-center text-center min-h-[400px]">
-              <div className="w-20 h-20 bg-sky-50 rounded-2xl flex items-center justify-center mb-6">
-                <Users className="w-10 h-10 text-[#0284c7]" />
+              <div className="w-20 h-20 bg-rose-50 rounded-2xl flex items-center justify-center mb-6">
+                <Users className="w-10 h-10 text-[#be185d]" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Diversity Metrics Dashboard</h3>
               <p className="text-gray-500 max-w-md leading-relaxed">Connect your HRIS (Workday, BambooHR) to automatically populate diversity, equity, and inclusion analytics.</p>

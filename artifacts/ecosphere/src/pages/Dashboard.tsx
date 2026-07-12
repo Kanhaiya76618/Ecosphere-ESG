@@ -94,20 +94,20 @@ export default function Dashboard() {
           <motion.div variants={item}>
             <div className="bg-white rounded-[14px] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)]">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-9 h-9 rounded-[10px] bg-[#0284c7]/10 flex items-center justify-center">
-                  <Users className="w-5 h-5 text-[#0284c7]" />
+                <div className="w-9 h-9 rounded-[10px] bg-[#be185d]/10 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-[#be185d]" />
                 </div>
                 <h3 className="text-[11px] uppercase tracking-[0.08em] font-medium text-gray-500">Social</h3>
               </div>
               <div className="flex items-end justify-between mb-4">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold text-[#0284c7]">74</span>
+                  <span className="text-4xl font-bold text-[#be185d]">74</span>
                   <span className="text-xl text-gray-300 font-medium">/100</span>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <div className="h-1.5 flex-1 rounded-full bg-gray-100 overflow-hidden">
-                  <div className="h-full bg-[#0284c7] rounded-full" style={{ width: '74%' }}></div>
+                  <div className="h-full bg-[#be185d] rounded-full" style={{ width: '74%' }}></div>
                 </div>
                 <div className="flex items-center text-xs font-medium text-red-700 bg-red-50 px-2 py-0.5 rounded-full shrink-0">
                   <ArrowDownRight className="w-3 h-3 mr-0.5" />
