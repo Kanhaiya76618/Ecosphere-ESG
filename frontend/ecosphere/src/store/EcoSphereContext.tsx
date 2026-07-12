@@ -1184,6 +1184,7 @@ export function EcoSphereProvider({ children }: { children: ReactNode }) {
               ...t,
               id: `tx-${t.id}`,
               departmentId: translateDeptId(t.departmentId),
+              calculatedTCO2e: Number(t.calculatedTco2e ?? t.calculatedTCO2e ?? 0),
             })),
             environmentalGoals: goals.map((g: any) => ({
               ...g,
