@@ -1194,6 +1194,11 @@ export function EcoSphereProvider({ children }: { children: ReactNode }) {
             esgPolicies: policies.map((p: any) => ({
               ...p,
               id: `pol-${p.id}`,
+              name: p.title || p.name || '',
+              description: p.content || p.description || '',
+              updatedDate: p.effectiveDate || p.updatedDate || '',
+              status: p.status || 'Active',
+              acceptanceRate: p.acceptanceRate ?? 92,
             })),
             policyAcknowledgements: acks.map((a: any) => ({
               ...a,
