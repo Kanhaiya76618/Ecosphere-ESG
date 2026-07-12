@@ -26,6 +26,11 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Server returned an invalid response. Please ensure the backend server is running.');
+      }
+
       const data = await response.json();
 
       if (!response.ok) {
