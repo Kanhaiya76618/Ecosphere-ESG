@@ -1,48 +1,63 @@
 # 🍃 EcoSphere: ESG Management & Employee Engagement Platform
 
-EcoSphere is an enterprise-grade **ESG (Environmental, Social & Governance) Management Platform** coupled with a gamification system designed to drive organizational sustainability, track real-time compliance, and engage employees in ESG initiatives.
+<p align="center">
+  <img src="https://img.shields.io/badge/Vite-7.x-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/React-18.x-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/Express-5.x-000000?style=for-the-badge&logo=express&logoColor=white" />
+  <img src="https://img.shields.io/badge/PostgreSQL-16-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img src="https://img.shields.io/badge/Drizzle-ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black" />
+</p>
 
 ---
 
-## 🚀 Key Features
+## 🌟 The Vision: "Sustainability Driven by People"
 
-### 1. 📊 ESG Score History & Rollups
-* **Pillar Computation:** Dynamically computes Environmental (transactions vs goals progress), Social (CSR campaign XP), and Governance (policy acceptance + compliance status + audits readiness) scores using configured weights (default 40/30/30).
-* **Rollup Scoping:** Rollups are dynamically scoped. Admins see company-wide metrics, while department heads/employees see views filtered to their specific department.
-* **Monthly Snapshots:** Automatically saves trailing snapshots to compile 12-month performance trend charts.
+Corporate ESG compliance is often treated as a cold ledger of calculations. **EcoSphere** changes that. By marrying a strict, real-time database-driven **ESG Compliance and Carbon Tracking Engine** with an engaging **Employee Gamification Platform**, we transform corporate goals into dynamic employee habits. 
 
-### 2. 🔐 Role-Based Authentication & Session Scoping
-* **Secure Flow:** JWT-based cookie authorization checks, protecting all views and module routing.
-* **Sidebar Profile Card:** Renders dynamic initials, color, name, role, and current gamification levels/XP for the logged-in user.
-* **Daily Login Bonus:** Awards `+5 XP` once per calendar day (logged in ledger) upon login to drive engagement.
-* **Leaderboard Highlight:** Automatically highlights the current user's row on the leaderboard with a "You" badge.
-
-### 3. 🌿 Module Overview
-* **Environmental:** Tracks manual carbon transactions (calculating fuel/electricity conversions dynamically) against set budget limits and tracks green progress goals.
-* **Social & Gamification:** HRIS diversity indicators, employee leaderboard, CSR campaign approvals, and XP/level status trackers.
-* **Governance:** Compliance risk issues logger (resolved/overdue status validations), policy acknowledgement ratios, and audit schedules.
-* **Reports:** Generates frameworks (GRI, SASB, TCFD) filtered by date, department, or ESG pillar.
+When employees complete social campaigns or adopt green transport, they earn XP, badges, and rewards—boosting both their local department score and the entire organization's ESG index.
 
 ---
 
-## 🛠️ Technology Stack
-* **Frontend:** React, Vite, TailwindCSS, Framer Motion, Lucide icons, Recharts.
-* **Backend:** Node.js, Express, TypeScript, cookie-parser.
-* **Database:** PostgreSQL (port `5433`), Drizzle ORM, Drizzle Kit.
+## 🎨 Key Features at a Glance
+
+### 📈 Dynamic ESG Calculation Engine
+```
+                  ┌────────────────────────────────────────┐
+                  │          Overall ESG Score             │
+                  │   (Weighted average of E, S, and G)    │
+                  └──────────────────┬─────────────────────┘
+                                     │
+         ┌───────────────────────────┼───────────────────────────┐
+         ▼                           ▼                           ▼
+┌──────────────────┐        ┌──────────────────┐        ┌──────────────────┐
+│  Environmental   │        │      Social      │        │    Governance    │
+│  • carbon tx progress     │        │  • CSR XP Earned  │        │  • policy acceptance     │
+│  • sustainability goals  │        │  • HRIS diversity │        │  • open risk severity    │
+└──────────────────┘        └──────────────────┘        └──────────────────┘
+```
+
+### 🔐 Multi-Role Session Scoping
+* **Admins & Sustainability Officers** see the big picture—full org analytics, weight adjustment controllers, audit reports, and company-wide carbon trend histories.
+* **Department Heads & Employees** see scoped views tailored specifically to their team's metrics (e.g. IT, HR, or Logistics), encouraging friendly competition on the leaderboard.
+
+### 🕹️ Login XP Events & Gamification
+* **Daily Check-in Bonus:** Logging in awards `+5 XP` once a day, recorded dynamically in the transaction ledger.
+* **Leaderboard Highlight:** Interactive leaderboards immediately showcase your ranking using a vibrant **"You"** card.
+* **Live Syncing:** Dispatch actions (adding transactions, resolving compliance logs) automatically write to the PostgreSQL database in the background.
 
 ---
 
 ## 👥 Seed Demo Login Credentials
 
-For judging and demo purposes, use the following credentials to experience different role-based views and scoping:
+Use the following seed credentials to explore the platform under different permission scopes:
 
 | Name | Email | Password | Role | Scoping |
 | :--- | :--- | :--- | :--- | :--- |
 | **Sarah Chen** | `sarah.chen@ecosphere.io` | `Admin@123` | `Admin` | Full Org Dashboard |
-| **Jane Doe** | `jane.doe@ecosphere.io` | `Sustain@123` | `Sustainability Officer` | Compliance / Policy Scopes |
-| **Rahul Sharma** | `rahul.sharma@ecosphere.io` | `Manager@123` | `Department Head` | IT Department Scoped |
-| **Priya Patel** | `priya.patel@ecosphere.io` | `Employee@123` | `Employee` | HR Department Scoped |
-| **Vikram Singh** | `vikram.singh@ecosphere.io` | `Employee@456` | `Employee` | Logistics Scoped |
+| **Jane Doe** | `jane.doe@ecosphere.io` | `Sustain@123` | `Sustainability Officer` | Compliance & Policy Scopes |
+| **Rahul Sharma** | `rahul.sharma@ecosphere.io` | `Manager@123` | `Department Head` | Scoped to IT Department |
+| **Priya Patel** | `priya.patel@ecosphere.io` | `Employee@123` | `Employee` | Scoped to HR Department |
+| **Vikram Singh** | `vikram.singh@ecosphere.io` | `Employee@456` | `Employee` | Scoped to Logistics |
 
 ---
 
