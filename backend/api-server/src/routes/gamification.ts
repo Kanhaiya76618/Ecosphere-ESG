@@ -19,8 +19,25 @@ import {
   xpBalance,
   evaluateBadges,
 } from "../services/gamification";
+import { authenticateToken } from "./auth";
 
 const router: IRouter = Router();
+
+// GET current user rank (Prompt 9)
+router.get("/me/rank", authenticateToken, async (req: any, res, next) => {
+  try {
+    const user = req.user;
+    const allEmployees = await db.select().from(employeesTable).orderBy(desc(employeesTable.xp));
+    const rank = allEmployees.findIndex(e => e.id === user.id) + 1;
+    res.json({
+      rank,
+      xp: user.xp,
+      level: user.level,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 // ---------- reference data ----------
 

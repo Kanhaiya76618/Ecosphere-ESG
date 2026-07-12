@@ -290,4 +290,5 @@ export interface EcoSphereState {
   };
   notifications: AppNotification[];
   currentUserRole: UserRole;
+  currentUser: any;
 }

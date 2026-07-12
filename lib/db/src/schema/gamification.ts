@@ -44,6 +44,13 @@ export const employeesTable = pgTable("employees", {
     .notNull()
     .references(() => departmentsTable.id),
   role: text("role").notNull().default("employee"),
+  passwordHash: text("password_hash").notNull().default(""),
+  avatarColor: text("avatar_color").notNull().default("#166534"),
+  avatarInitials: text("avatar_initials").notNull().default("JD"),
+  xp: integer("xp").notNull().default(0),
+  level: integer("level").notNull().default(1),
+  status: text("status").notNull().default("Active"),
+  lastLoginDate: text("last_login_date"),
 });
 
 export const challengesTable = pgTable("challenges", {

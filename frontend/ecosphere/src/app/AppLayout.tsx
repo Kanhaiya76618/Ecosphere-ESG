@@ -80,12 +80,27 @@ export function AppLayout({ children }: AppLayoutProps) {
         
         <div className="p-4 border-t border-[#E8EDE6]">
           <div className="flex items-center gap-3 px-2 py-2">
-            <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-sm font-semibold text-[#166534]">
-              JD
+            <div 
+              className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold text-white shrink-0"
+              style={{ backgroundColor: state.currentUser?.avatarColor || '#166534' }}
+            >
+              {state.currentUser?.avatarInitials || 'JD'}
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold text-gray-900 leading-none">Jane Doe</span>
-              <span className="text-xs text-gray-400 mt-1 font-medium leading-none block truncate max-w-[140px]">{currentUserRole}</span>
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-semibold text-gray-900 leading-none truncate">{state.currentUser?.name || 'Jane Doe'}</span>
+              <span className="text-[11px] text-gray-400 mt-1 font-medium leading-none block truncate max-w-[140px]">{state.currentUser?.role || currentUserRole}</span>
+              <span className="text-[10px] text-emerald-600 font-bold mt-1 leading-none block">
+                Lvl {state.currentUser?.level || 1} · {state.currentUser?.xp || 0} XP
+              </span>
+              <button 
+                onClick={async () => {
+                  await fetch('/api/auth/logout', { method: 'POST' });
+                  window.location.reload();
+                }}
+                className="text-[10px] text-gray-400 hover:text-rose-600 mt-1 text-left underline cursor-pointer"
+              >
+                Sign Out
+              </button>
             </div>
           </div>
         </div>

@@ -8,6 +8,7 @@ import {
   type Participation,
 } from './data';
 import { useToast } from '@/hooks/use-toast';
+import { useEcoSphere } from '@/store/EcoSphereContext';
 import { motion } from 'framer-motion';
 import {
   Award,
@@ -734,6 +735,7 @@ function ApprovalsQueue({
 // ---------- Leaderboard ----------
 
 function LeaderboardView() {
+  const { state } = useEcoSphere();
   const leaderboardQuery = useQuery({
     queryKey: ['leaderboard'],
     queryFn: api.leaderboard,
@@ -794,27 +796,38 @@ function LeaderboardView() {
                   </td>
                 </tr>
               )}
-              {employees.map((user) => (
-                <tr key={user.id} className="hover:bg-violet-50/30 bg-white">
-                  <td className="px-6 py-4 text-center">{rankBubble(user.rank)}</td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-4">
-                      <div
-                        className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs border ${
-                          user.rank <= 3
-                            ? 'bg-violet-100 text-violet-700 border-violet-200'
-                            : 'bg-gray-100 text-gray-500 border-gray-200'
-                        }`}
-                      >
-                        {user.name
-                          .split(' ')
-                          .map((w) => w[0])
-                          .join('')
-                          .slice(0, 2)}
+              {employees.map((user) => {
+                const isMe = state.currentUser && (
+                  state.currentUser.id === user.id ||
+                  `emp-${state.currentUser.id}` === user.id.toString() ||
+                  state.currentUser.id.toString() === user.id.toString()
+                );
+                return (
+                  <tr key={user.id} className={`hover:bg-violet-50/30 transition-colors ${isMe ? 'bg-emerald-50 hover:bg-emerald-100/50' : 'bg-white'}`}>
+                    <td className="px-6 py-4 text-center">{rankBubble(user.rank)}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div
+                          className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs border ${
+                            user.rank <= 3
+                              ? 'bg-violet-100 text-violet-700 border-violet-200'
+                              : 'bg-gray-100 text-gray-500 border-gray-200'
+                          }`}
+                        >
+                          {user.name
+                            .split(' ')
+                            .map((w) => w[0])
+                            .join('')
+                            .slice(0, 2)}
+                        </div>
+                        <span className="font-bold text-gray-900">{user.name}</span>
+                        {isMe && (
+                          <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-600 text-white">
+                            You
+                          </span>
+                        )}
                       </div>
-                      <span className="font-bold text-gray-900">{user.name}</span>
-                    </div>
-                  </td>
+                    </td>
                   <td className="px-6 py-4 text-gray-500 font-medium">
                     {user.department}
                   </td>
@@ -824,7 +837,8 @@ function LeaderboardView() {
                     </span>
                   </td>
                 </tr>
-              ))}
+              );
+            })}
             </tbody>
           </table>
         </div>

@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 import { useEcoSphere } from '@/store/EcoSphereContext';
 
 export default function Dashboard() {
-  const { overallEsgScore, activeDepartments } = useEcoSphere();
+  const { overallEsgScore, activeDepartments, state } = useEcoSphere();
 
   const container = {
     hidden: { opacity: 0 },
@@ -38,8 +38,15 @@ export default function Dashboard() {
         {/* HERO BANNER */}
         <motion.div variants={item} className="bg-gradient-to-r from-[#F0FBF4] to-[#E8F5EE] rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between">
           <div className="mb-6 md:mb-0">
-            <h1 className="text-3xl font-bold text-[#111827] mb-2 tracking-tight">Good morning, Sarah</h1>
-            <p className="text-gray-500">Here is your ESG performance summary for July 12, 2026.</p>
+            <h1 className="text-3xl font-bold text-[#111827] mb-2 tracking-tight">
+              Good morning, {state.currentUser?.name?.split(' ')[0] || 'Sarah'}
+            </h1>
+            <p className="text-gray-500">
+              {state.currentUser 
+                ? `You're currently ranked #${state.currentUser.rank} with ${state.currentUser.xp} XP (Level ${state.currentUser.level}).`
+                : 'Here is your ESG performance summary for July 12, 2026.'
+              }
+            </p>
           </div>
           
           <div className="flex flex-col items-center">

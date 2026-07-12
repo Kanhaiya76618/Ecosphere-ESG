@@ -9,12 +9,19 @@ import Governance from '@/modules/governance/Governance';
 import Gamification from '@/modules/gamification/Gamification';
 import Reports from '@/modules/reports/Reports';
 import Settings from '@/modules/settings/Settings';
+import Login from '@/modules/auth/Login';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
-import { EcoSphereProvider } from '@/store/EcoSphereContext';
+import { EcoSphereProvider, useEcoSphere } from '@/store/EcoSphereContext';
 
 const queryClient = new QueryClient();
 
 function Router() {
+  const { state } = useEcoSphere();
+
+  if (!state.currentUser) {
+    return <Login />;
+  }
+
   return (
     <Switch>
       <Route path="/" component={Dashboard} />

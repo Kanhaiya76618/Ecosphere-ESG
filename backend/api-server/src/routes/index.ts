@@ -7,6 +7,7 @@ import gamificationRouter from "./gamification";
 import reportsRouter from "./reports";
 import settingsRouter from "./settings";
 import dashboardRouter from "./dashboard";
+import authRouter from "./auth";
 
 const router: IRouter = Router();
 
@@ -19,5 +20,6 @@ router.use("/gamification", gamificationRouter);
 router.use("/reports", reportsRouter);
 router.use("/settings", settingsRouter);
 router.use("/dashboard", dashboardRouter);
+router.use("/auth", authRouter);
 
 export default router;

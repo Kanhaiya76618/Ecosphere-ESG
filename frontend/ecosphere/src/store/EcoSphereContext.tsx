@@ -227,6 +227,7 @@ const INITIAL_STATE: EcoSphereState = {
   },
   notifications: SEED_NOTIFICATIONS,
   currentUserRole: 'Sustainability Officer',
+  currentUser: null,
 };
 
 // ── Alert Helpers ─────────────────────────────────────────────────────────────
@@ -311,6 +312,7 @@ type Action =
   | { type: 'TOGGLE_AUTO_EMISSION'; payload?: boolean }
   | { type: 'UPDATE_SETTINGS';      payload: Partial<AppSettings> }
   | { type: 'SET_USER_ROLE';        payload: UserRole }
+  | { type: 'SET_CURRENT_USER';     payload: any }
   | { type: 'READ_NOTIFICATION';    payload: { id: string } }
   | { type: 'CLEAR_ALL_NOTIFICATIONS' }
   // Social CSR & Gamification Approvals
@@ -357,6 +359,13 @@ function reducer(state: EcoSphereState, action: Action): EcoSphereState {
       return {
         ...state,
         ...action.payload,
+      };
+
+    case 'SET_CURRENT_USER':
+      return {
+        ...state,
+        currentUser: action.payload,
+        currentUserRole: action.payload ? action.payload.role : 'Sustainability Officer',
       };
 
     case 'ADD_DEPARTMENT':
