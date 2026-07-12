@@ -6,70 +6,25 @@ import {
   employeesTable,
   challengesTable,
   challengeParticipationsTable,
-  badgesTable,
   employeeBadgesTable,
+  badgesTable,
   rewardsTable,
   rewardRedemptionsTable,
   xpLedgerTable,
   insertChallengeSchema,
   updateChallengeSchema,
   type ChallengeStatus,
-} from "@workspace/db";
+} from "../db";
+import {
+  xpBalance,
+  evaluateBadges,
+} from "../services/gamification";
 
 const router: IRouter = Router();
 
-// ---------- helpers ----------
-
-async function xpBalance(employeeId: number): Promise<number> {
-  const [row] = await db
-    .select({ total: sql<number>`coalesce(sum(${xpLedgerTable.delta}), 0)::int` })
-    .from(xpLedgerTable)
-    .where(eq(xpLedgerTable.employeeId, employeeId));
-  return row?.total ?? 0;
-}
-
-async function completedChallengeCount(employeeId: number): Promise<number> {
-  const [row] = await db
-    .select({ count: sql<number>`count(*)::int` })
-    .from(challengeParticipationsTable)
-    .where(
-      and(
-        eq(challengeParticipationsTable.employeeId, employeeId),
-        eq(challengeParticipationsTable.approvalStatus, "approved"),
-      ),
-    );
-  return row?.count ?? 0;
-}
-
-// Badge auto-award: evaluate every unlock rule for the employee after any XP
-// change and insert missing employee_badges rows. Returns newly awarded badges.
-async function evaluateBadges(employeeId: number) {
-  const [total, completed, allBadges] = await Promise.all([
-    xpBalance(employeeId),
-    completedChallengeCount(employeeId),
-    db.select().from(badgesTable),
-  ]);
-  const newlyAwarded = [];
-  for (const badge of allBadges) {
-    const rule = badge.unlockRule;
-    const unlocked =
-      rule.type === "xp_total"
-        ? total >= rule.threshold
-        : completed >= rule.count;
-    if (!unlocked) continue;
-    const inserted = await db
-      .insert(employeeBadgesTable)
-      .values({ employeeId, badgeId: badge.id })
-      .onConflictDoNothing()
-      .returning();
-    if (inserted.length > 0) newlyAwarded.push(badge);
-  }
-  return newlyAwarded;
-}
-
 // ---------- reference data ----------
 
-router.get("/gamification/employees", async (_req, res) => {
+router.get("/employees", async (_req, res) => {
   const rows = await db
     .select({
       id: employeesTable.id,
@@ -88,7 +43,7 @@ router.get("/gamification/employees", async (_req, res) => {
   res.json(rows);
 });
 
-router.get("/gamification/employees/:id/summary", async (req, res) => {
+router.get("/employees/:id/summary", async (req, res) => {
   const employeeId = Number(req.params.id);
   const [balance, badges] = await Promise.all([
     xpBalance(employeeId),
@@ -102,7 +57,7 @@ router.get("/gamification/employees/:id/summary", async (req, res) => {
 
 // ---------- challenges: CRUD + lifecycle ----------
 
-router.get("/gamification/challenges", async (_req, res) => {
+router.get("/challenges", async (_req, res) => {
   const challenges = await db
     .select()
     .from(challengesTable)
@@ -131,7 +86,7 @@ router.get("/gamification/challenges", async (_req, res) => {
   );
 });
 
-router.post("/gamification/challenges", async (req, res) => {
+router.post("/challenges", async (req, res) => {
   const parsed = insertChallengeSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
@@ -144,7 +99,7 @@ router.post("/gamification/challenges", async (req, res) => {
   res.status(201).json(created);
 });
 
-router.patch("/gamification/challenges/:id", async (req, res) => {
+router.patch("/challenges/:id", async (req, res) => {
   const parsed = updateChallengeSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
@@ -170,7 +125,7 @@ const VALID_TRANSITIONS: Record<ChallengeStatus, ChallengeStatus[]> = {
   archived: [],
 };
 
-router.post("/gamification/challenges/:id/transition", async (req, res) => {
+router.post("/challenges/:id/transition", async (req, res) => {
   const target = req.body?.status as ChallengeStatus | undefined;
   if (!target || !(target in VALID_TRANSITIONS)) {
     res.status(400).json({ error: `Invalid target status: ${target}` });
@@ -200,7 +155,7 @@ router.post("/gamification/challenges/:id/transition", async (req, res) => {
 
 // ---------- participations ----------
 
-router.post("/gamification/challenges/:id/join", async (req, res) => {
+router.post("/challenges/:id/join", async (req, res) => {
   const challengeId = Number(req.params.id);
   const employeeId = Number(req.body?.employeeId);
   if (!employeeId) {
@@ -231,7 +186,7 @@ router.post("/gamification/challenges/:id/join", async (req, res) => {
   res.status(201).json(inserted[0]);
 });
 
-router.patch("/gamification/participations/:id", async (req, res) => {
+router.patch("/participations/:id", async (req, res) => {
   const { progress, proof } = req.body ?? {};
   const patch: Partial<{ progress: number; proof: string }> = {};
   if (progress !== undefined) {
@@ -259,7 +214,7 @@ router.patch("/gamification/participations/:id", async (req, res) => {
   res.json(updated);
 });
 
-router.patch("/gamification/participations/:id/review", async (req, res) => {
+router.patch("/participations/:id/review", async (req, res) => {
   const decision = req.body?.decision as "approved" | "rejected" | undefined;
   if (decision !== "approved" && decision !== "rejected") {
     res.status(400).json({ error: 'decision must be "approved" or "rejected"' });
@@ -304,7 +259,7 @@ router.patch("/gamification/participations/:id/review", async (req, res) => {
 
 // ---------- badges ----------
 
-router.get("/gamification/badges", async (_req, res) => {
+router.get("/badges", async (_req, res) => {
   const [badges, earned] = await Promise.all([
     db.select().from(badgesTable).orderBy(badgesTable.id),
     db
@@ -330,12 +285,12 @@ router.get("/gamification/badges", async (_req, res) => {
 
 // ---------- rewards ----------
 
-router.get("/gamification/rewards", async (_req, res) => {
+router.get("/rewards", async (_req, res) => {
   const rows = await db.select().from(rewardsTable).orderBy(rewardsTable.pointsRequired);
   res.json(rows);
 });
 
-router.post("/gamification/rewards/:id/redeem", async (req, res) => {
+router.post("/rewards/:id/redeem", async (req, res) => {
   const employeeId = Number(req.body?.employeeId);
   if (!employeeId) {
     res.status(400).json({ error: "employeeId is required" });
@@ -389,7 +344,7 @@ router.post("/gamification/rewards/:id/redeem", async (req, res) => {
 
 // ---------- leaderboards ----------
 
-router.get("/gamification/leaderboard", async (_req, res) => {
+router.get("/leaderboard", async (_req, res) => {
   const employees = await db
     .select({
       id: employeesTable.id,

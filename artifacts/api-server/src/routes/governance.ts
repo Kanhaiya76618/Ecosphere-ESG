@@ -1,0 +1,10 @@
+import { Router, type IRouter } from "express";
+import { getModuleStatus } from "../services/governance";
+
+const router: IRouter = Router();
+
+router.get("/", (_req, res) => {
+  res.json(getModuleStatus());
+});
+
+export default router;
