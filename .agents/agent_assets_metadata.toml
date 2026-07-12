@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "t-3RRn0VlWkWeDspeEoKg"
+uri = "file://EcoSphere.zip"
+type = "unspecified"
+title = "EcoSphere — Full Project (ZIP)"
