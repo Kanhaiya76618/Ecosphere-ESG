@@ -6,20 +6,57 @@ Odoo-style hackathon project: an ERP that tracks a company's Environmental impac
 
 ```
 artifacts/
-  ecosphere/        React 19 + Vite frontend (the app). Pages in src/pages:
-                    Dashboard, Environmental, Social, Governance, Gamification,
-                    Reports, Settings. shadcn/ui components in src/components/ui.
-  api-server/       Express 5 backend. Routes in src/routes, bundled with esbuild.
-  mockup-sandbox/   Static design mockups (ESG dashboard variants). Not the app.
+  ecosphere/            React 19 + Vite frontend (the app)
+    src/
+      app/              Router (App.tsx), layout (AppLayout.tsx), not-found
+      components/ui/    Shared generic components (shadcn/ui)
+      components/shared/ Domain-shared components (empty for now — put
+                        StatusBadge/ScoreCard/FilterBar style components here)
+      modules/          One folder per ESG module, mirrors backend routes:
+        dashboard/      Dashboard.tsx + data.ts
+        environmental/  Environmental.tsx + data.ts (emission factors, carbon, goals)
+        social/         Social.tsx + data.ts (CSR, participation)
+        governance/     Governance.tsx + data.ts (policies, audits, compliance)
+        gamification/   Gamification.tsx + data.ts (REAL API — challenges,
+                        badges, rewards, leaderboard)
+        reports/        Reports.tsx + data.ts
+        settings/       Settings.tsx + data.ts (departments, config)
+      lib/
+        api.ts          Single fetch wrapper for /api/* (baseURL, error handling)
+        types.ts        Shared TS types matching the spec data model
+        mock/           Mock data split per module (dashboard.ts, environmental.ts,
+                        social.ts, governance.ts, gamification.ts, settings.ts)
+        utils.ts        cn() etc.
+      hooks/            Shared hooks (use-toast, use-mobile)
+  api-server/           Express 5 backend, bundled with esbuild
+    src/
+      index.ts          Bootstrap (reads PORT, starts app)
+      app.ts            Express app: middleware + mounts /api router
+      middleware/       request-logger, error-handler, validate helper
+      routes/           One router per module: environmental.ts, social.ts,
+                        governance.ts, gamification.ts, reports.ts, settings.ts
+                        (+ health.ts). Mounted at /api/<name>.
+      services/         One file per module; business logic lives here, routes
+                        stay thin (gamification.ts has xpBalance/evaluateBadges)
+      db/               Re-exports the drizzle client + schema from lib/db
+  mockup-sandbox/       Static design mockups (ESG dashboard variants). Not the app.
 lib/
-  db/               Drizzle ORM + Postgres. Schema: src/schema/index.ts (re-exports
-                    per-table files). `pnpm --filter @workspace/db run push` to migrate.
-  api-spec/         OpenAPI spec + Orval codegen (largely unused so far).
-  api-zod/          Zod schemas generated/shared for the API.
-  api-client-react/ Generated react-query hooks (largely unused so far).
-scripts/            One-off TS scripts run with tsx (seed scripts live here).
-attached_assets/    Problem statement + reference image.
+  db/                   Drizzle ORM + Postgres. Schema: src/schema/index.ts →
+                        gamification.ts (real tables) + esg-skeletons.ts
+                        (commented skeletons for the other modules).
+                        `pnpm --filter @workspace/db run push` to migrate.
+  api-spec/             OpenAPI spec + Orval codegen (largely unused so far).
+  api-zod/              Zod schemas generated/shared for the API.
+  api-client-react/     Generated react-query hooks (largely unused so far).
+scripts/                One-off TS scripts run with tsx (seed scripts live here).
+attached_assets/        Problem statement + reference image.
 ```
+
+**Naming convention:** frontend `modules/<name>` ↔ backend `routes/<name>.ts` ↔
+`services/<name>.ts` ↔ (future) DB tables in `lib/db/src/schema/`. Each frontend
+module's `data.ts` is the ONE place that switches that module from mock to real
+API; pages import only from their own module folder + shared (`components/`,
+`lib/`, `hooks/`).
 
 ## Stack
 
@@ -43,12 +80,21 @@ pnpm run typecheck                            # full typecheck
 
 Frontend dev server proxies `/api` → `http://localhost:5000` (see `vite.config.ts`).
 
-## Current state: mock vs real
+## Current state: mock vs real (per module)
 
-- **Gamification page: REAL.** Backed by Postgres via `/api/gamification/*` (challenges + lifecycle, participations, approvals, XP ledger, badges w/ auto-award, rewards + redemption, leaderboards). No mock imports.
-- **Dashboard, Environmental, Social, Governance, Reports, Settings: MOCK.** They render hardcoded arrays from `artifacts/ecosphere/src/data/mock.ts`.
-- Backend: `/api/healthz` + `/api/gamification/*`. Nothing else.
-- DB: gamification tables only (see below). No environmental/governance tables yet.
+| Module        | Frontend data source                    | Backend                       |
+|---------------|-----------------------------------------|-------------------------------|
+| gamification  | **REAL** — `/api/gamification/*`        | Full CRUD + lifecycle + ledger|
+| dashboard     | mock (`lib/mock` via module `data.ts`)  | none                          |
+| environmental | mock                                    | stub `GET /api/environmental` |
+| social        | mock                                    | stub `GET /api/social`        |
+| governance    | mock                                    | stub `GET /api/governance`    |
+| reports       | static JSX                              | stub `GET /api/reports`       |
+| settings      | mock                                    | stub `GET /api/settings`      |
+
+- `/api/healthz` for health. Stub routes return `{ module, status: "stub" }`.
+- DB: gamification tables are real; all other modules exist only as commented
+  skeletons in `lib/db/src/schema/esg-skeletons.ts`.
 
 ## Data model (from spec)
 
