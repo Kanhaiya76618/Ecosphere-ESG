@@ -7,9 +7,20 @@ import {
 import { ArrowUpRight, ArrowDownRight, Leaf, Users, ShieldCheck, TrendingUp, Plus, FileText, CheckCircle2, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useEcoSphere } from '@/store/EcoSphereContext';
+import { useState } from 'react';
+import { useLocation } from 'wouter';
+import { AddTransactionModal } from '@/modules/environmental/Environmental';
+import { CreateCampaignModal } from '@/modules/social/Social';
+import { ReportIssueModal } from '@/modules/governance/Governance';
 
 export default function Dashboard() {
   const { overallEsgScore, activeDepartments, state } = useEcoSphere();
+  const [, setLocation] = useLocation();
+
+  // Modal toggle states
+  const [showAddTxModal, setShowAddTxModal] = useState(false);
+  const [showCreateCsrModal, setShowCreateCsrModal] = useState(false);
+  const [showReportIssueModal, setShowReportIssueModal] = useState(false);
 
   const container = {
     hidden: { opacity: 0 },
@@ -291,7 +302,10 @@ export default function Dashboard() {
             <div className="bg-white rounded-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)] p-6 h-full">
               <h3 className="text-lg font-bold text-[#111827] mb-6">Quick Actions</h3>
               <div className="space-y-3">
-                <button className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-sm hover:border-green-200 transition-all group">
+                <button 
+                  onClick={() => setShowAddTxModal(true)}
+                  className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-sm hover:border-green-200 transition-all group"
+                >
                   <div className="flex items-center gap-4">
                     <div className="w-9 h-9 rounded-full bg-green-50 text-[#16a34a] flex items-center justify-center group-hover:bg-[#16a34a] group-hover:text-white transition-colors">
                       <Plus className="w-4 h-4" />
@@ -300,7 +314,10 @@ export default function Dashboard() {
                   </div>
                   <ChevronRight className="w-4 h-4 text-gray-400" />
                 </button>
-                <button className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-sm hover:border-blue-200 transition-all group">
+                <button 
+                  onClick={() => setShowCreateCsrModal(true)}
+                  className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-sm hover:border-blue-200 transition-all group"
+                >
                   <div className="flex items-center gap-4">
                     <div className="w-9 h-9 rounded-full bg-blue-50 text-[#0284c7] flex items-center justify-center group-hover:bg-[#0284c7] group-hover:text-white transition-colors">
                       <Users className="w-4 h-4" />
@@ -309,7 +326,10 @@ export default function Dashboard() {
                   </div>
                   <ChevronRight className="w-4 h-4 text-gray-400" />
                 </button>
-                <button className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-sm hover:border-amber-200 transition-all group">
+                <button 
+                  onClick={() => setShowReportIssueModal(true)}
+                  className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-sm hover:border-amber-200 transition-all group"
+                >
                   <div className="flex items-center gap-4">
                     <div className="w-9 h-9 rounded-full bg-amber-50 text-[#b45309] flex items-center justify-center group-hover:bg-[#b45309] group-hover:text-white transition-colors">
                       <CheckCircle2 className="w-4 h-4" />
@@ -318,7 +338,10 @@ export default function Dashboard() {
                   </div>
                   <ChevronRight className="w-4 h-4 text-gray-400" />
                 </button>
-                <button className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-sm hover:border-teal-200 transition-all group">
+                <button 
+                  onClick={() => setLocation('/reports')}
+                  className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-sm hover:border-teal-200 transition-all group"
+                >
                   <div className="flex items-center gap-4">
                     <div className="w-9 h-9 rounded-full bg-teal-50 text-[#0f766e] flex items-center justify-center group-hover:bg-[#0f766e] group-hover:text-white transition-colors">
                       <FileText className="w-4 h-4" />
@@ -332,6 +355,17 @@ export default function Dashboard() {
           </motion.div>
         </div>
       </motion.div>
+
+      {/* Render Reused Modals inline */}
+      {showAddTxModal && (
+        <AddTransactionModal onClose={() => setShowAddTxModal(false)} />
+      )}
+      {showCreateCsrModal && (
+        <CreateCampaignModal onClose={() => setShowCreateCsrModal(false)} />
+      )}
+      {showReportIssueModal && (
+        <ReportIssueModal onClose={() => setShowReportIssueModal(false)} />
+      )}
     </AppLayout>
   );
 }

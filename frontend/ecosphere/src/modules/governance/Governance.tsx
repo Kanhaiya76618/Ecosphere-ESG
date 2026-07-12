@@ -17,7 +17,7 @@ interface ReportIssueModalProps {
   onClose: () => void;
 }
 
-function ReportIssueModal({ onClose }: ReportIssueModalProps) {
+export function ReportIssueModal({ onClose }: ReportIssueModalProps) {
   const { activeDepartments, activeEmployees, activeAudits, dispatch } = useEcoSphere();
   const { toast } = useToast();
   

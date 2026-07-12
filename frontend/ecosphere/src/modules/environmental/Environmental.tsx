@@ -13,7 +13,7 @@ import { calculateTransactionStatus, calculateTCO2e, calculateProgress, exportTo
 
 // ── Add/Edit Transaction Modal ──────────────────────────────────────────────────
 
-function AddTransactionModal({
+export function AddTransactionModal({
   onClose,
 }: {
   onClose: () => void;

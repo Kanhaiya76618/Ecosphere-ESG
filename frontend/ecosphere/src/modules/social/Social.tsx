@@ -19,7 +19,7 @@ interface CreateCampaignModalProps {
   onClose: () => void;
 }
 
-function CreateCampaignModal({ onClose }: CreateCampaignModalProps) {
+export function CreateCampaignModal({ onClose }: CreateCampaignModalProps) {
   const { activeCategories, dispatch } = useEcoSphere();
   const [title, setTitle] = useState('');
   const [categoryId, setCategoryId] = useState(activeCategories[0]?.id ?? '');
