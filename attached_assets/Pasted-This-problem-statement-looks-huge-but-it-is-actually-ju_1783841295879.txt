@@ -1,0 +1,675 @@
+This problem statement looks huge, but it is actually just asking you to build an ERP module for ESG (Environmental, Social, Governance).
+
+Think of it like this:
+
+The company wants one software where they can track how environmentally friendly, socially responsible, and legally compliant they are.
+
+What is ESG?
+
+Imagine you own a company.
+
+People don't only judge you by profit.
+
+They also ask:
+
+🌍 Are you polluting the environment?
+👨‍💼 Are your employees treated well?
+📜 Are you following company laws and policies?
+
+These three together are called ESG.
+
+The Platform
+
+EcoSphere is simply an ERP software.
+
+It has 4 modules
+
+EcoSphere
+│
+├── Environmental
+├── Social
+├── Governance
+└── Gamification
+1. Environmental Module 🌱
+
+This module measures pollution.
+
+Example:
+
+Company buys diesel.
+
+Diesel produces CO₂.
+
+Software automatically calculates pollution.
+
+Example
+
+100 Litres Diesel
+
+↓
+
+Emission Factor
+
+↓
+
+100 × 2.68
+
+↓
+
+268 kg CO₂
+
+That becomes a Carbon Transaction.
+
+Features
+Carbon Calculator
+Emission Factors
+Carbon Reports
+Sustainability Goals
+
+Example Goal
+
+Current
+
+5000 kg CO₂
+
+Goal
+
+Reduce to
+
+4200 kg
+
+Dashboard
+
+Carbon Produced
+
+██████████ 5000
+
+Goal
+
+████████ 4200
+2. Social Module ❤️
+
+This is about employees and society.
+
+Suppose company organizes
+
+Tree Plantation
+
+Employees join.
+
+Software stores
+
+Employee
+
+↓
+
+Participation
+
+↓
+
+Proof Photo
+
+↓
+
+Manager Approval
+
+↓
+
+Points Earned
+
+Example
+
+CSR Activity
+
+Beach Cleaning
+
+↓
+
+Employee uploads selfie
+
+↓
+
+Manager approves
+
+↓
+
+Employee gets
+
+100 Points
+
+Also tracks
+
+Diversity
+Women employees
+Trainings
+Employee Engagement
+3. Governance Module 📜
+
+Governance means
+
+Is company following rules?
+
+Example
+
+Company has policy
+
+No Smoking
+
+Every employee must accept.
+
+Software tracks
+
+Policy
+
+↓
+
+Employee Accepted?
+
+Yes
+
+No
+
+Audits
+
+Example
+
+Fire Safety Audit
+
+↓
+
+Problem Found
+
+↓
+
+Compliance Issue Created
+
+↓
+
+Owner Assigned
+
+↓
+
+Deadline
+
+↓
+
+Solved?
+
+Example
+
+Issue
+
+Fire Extinguisher Missing
+
+Owner
+
+Facilities Team
+
+Due Date
+
+20 July
+
+Status
+
+Open
+4. Gamification 🎮
+
+This makes employees interested.
+
+Instead of forcing them
+
+Reward them.
+
+Example
+
+Tree Plantation
+
+↓
+
+Complete
+
+↓
+
++200 XP
+
+↓
+
+Badge
+
+↓
+
+Leaderboard
+
+Employees compete.
+
+1.
+
+Rahul
+
+2500 XP
+
+🥇
+
+2.
+
+Aman
+
+2100 XP
+
+🥈
+
+3.
+
+Priya
+
+1800 XP
+
+🥉
+
+Badges
+
+Eco Warrior
+
+Carbon Saver
+
+CSR Champion
+
+Green Hero
+
+Rewards
+
+Employees spend points.
+
+Example
+
+1000 Points
+
+↓
+
+Coffee Mug
+
+3000 Points
+
+↓
+
+Amazon Voucher
+
+5000 Points
+
+↓
+
+Extra Leave
+Master Data
+
+Master Data means
+
+Information that rarely changes.
+
+Think of it as settings.
+
+Example
+
+Departments
+
+HR
+
+Finance
+
+IT
+
+Sales
+
+Emission Factors
+
+Diesel
+
+2.68
+
+Petrol
+
+2.31
+
+Electricity
+
+0.82
+
+Policies
+
+Data Privacy
+
+POSH
+
+Leave Policy
+
+Badges
+
+Eco Hero
+
+Green Leader
+
+Rewards
+
+Gift Card
+
+Coffee Mug
+
+T-Shirt
+
+These stay in database.
+
+Transaction Data
+
+This changes every day.
+
+Example
+
+Today
+
+Employee joined CSR
+
+Carbon Generated
+
+Audit Created
+
+Challenge Completed
+
+Tomorrow
+
+New records again.
+
+Workflow (Simple)
+Admin creates
+
+Departments
+
+Emission Factors
+
+Policies
+
+Challenges
+
+↓
+
+Employees work daily
+
+↓
+
+Carbon is calculated
+
+↓
+
+Employees join CSR
+
+↓
+
+Policies accepted
+
+↓
+
+Audits happen
+
+↓
+
+Department Scores
+
+↓
+
+Overall ESG Score
+
+↓
+
+Dashboard
+
+That's all.
+
+ESG Score
+
+Each department gets
+
+Environmental Score
+
+Example
+
+80
+
+Social
+
+90
+
+Governance
+
+70
+
+Formula
+
+40%
+
+Environmental
+
++
+
+30%
+
+Social
+
++
+
+30%
+
+Governance
+
+Calculation
+
+80×0.4
+
+=
+
+32
+
+90×0.3
+
+=
+
+27
+
+70×0.3
+
+=
+
+21
+
+Total
+
+80
+
+Department ESG Score = 80
+
+Then company score
+
+IT
+
+80
+
+HR
+
+90
+
+Sales
+
+70
+
+↓
+
+Average
+
+↓
+
+80
+Reports
+
+Software generates reports like
+
+Environmental Report
+
+↓
+
+How much carbon?
+
+↓
+
+Social Report
+
+↓
+
+How many CSR activities?
+
+↓
+
+Governance Report
+
+↓
+
+How many audits?
+
+↓
+
+ESG Report
+
+↓
+
+Overall Performance
+
+Can export
+
+PDF
+
+Excel
+
+CSV
+Notification System
+
+Examples
+
+Policy pending
+
+Reminder
+Badge unlocked
+
+Congratulations
+Compliance issue overdue
+
+Alert
+CSR approved
+
+Notification
+Automatic Rules
+
+Instead of admin doing everything
+
+Software does it automatically.
+
+Example
+
+Employee reaches
+
+1000 XP
+
+Software
+
+↓
+
+Automatically
+
+Award Badge
+
+No admin needed.
+
+Another
+
+Company buys diesel
+
+↓
+
+Software
+
+↓
+
+Automatically calculate carbon
+
+No manual entry.
+
+Challenge Lifecycle
+
+Admin creates challenge
+
+Draft
+
+↓
+
+Active
+
+↓
+
+Employee Participates
+
+↓
+
+Under Review
+
+↓
+
+Completed
+
+or
+
+Archived
+Database Tables (Easy View)
+Departments
+
+Employees
+
+Emission Factors
+
+Policies
+
+CSR Activities
+
+Carbon Transactions
+
+Challenges
+
+Challenge Participation
+
+Badges
+
+Rewards
+
+Audits
+
+Compliance Issues
+
+Department Scores
+Overall Architecture
+                EcoSphere ERP
+
+                     │
+      ┌──────────────┼──────────────┐
+      │              │              │
+ Environmental     Social      Governance
+      │              │              │
+ Carbon         CSR Events      Policies
+ Emissions      Participation   Audits
+ Goals          Trainings       Compliance
+      │              │              │
+      └──────────────┼──────────────┘
+                     │
+             Department ESG Score
+                     │
+              Overall ESG Score
+                     │
+        Dashboard + Reports + Charts
+                     │
+         Gamification (XP • Badges • Rewards)
+In one sentence
+
+EcoSphere is an ERP module that automatically tracks a company's environmental impact (carbon emissions), social responsibility (CSR and employee engagement), and governance (policies, audits, compliance), computes ESG scores for departments and the organization, and encourages participation through gamification with XP, badges, rewards, and leaderboards.
