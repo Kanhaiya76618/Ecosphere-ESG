@@ -1,13 +1,16 @@
 import { AppLayout } from '@/app/AppLayout';
-import { DASHBOARD_TREND, DEPARTMENTS, CARBON_TRANSACTIONS } from './data';
+import { DASHBOARD_TREND, CARBON_TRANSACTIONS } from '@/data/mock';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Cell
 } from 'recharts';
 import { ArrowUpRight, ArrowDownRight, Leaf, Users, ShieldCheck, TrendingUp, Plus, FileText, CheckCircle2, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useEcoSphere } from '@/store/EcoSphereContext';
 
 export default function Dashboard() {
+  const { overallEsgScore, activeDepartments } = useEcoSphere();
+
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -21,9 +24,8 @@ export default function Dashboard() {
     show: { opacity: 1, y: 0 }
   };
 
-  const overallScore = 81;
   const circumference = 2 * Math.PI * 40;
-  const strokeDashoffset = circumference - (overallScore / 100) * circumference;
+  const strokeDashoffset = circumference - (overallEsgScore / 100) * circumference;
 
   return (
     <AppLayout>
@@ -31,7 +33,7 @@ export default function Dashboard() {
         variants={container}
         initial="hidden"
         animate="show"
-        className="max-w-7xl mx-auto space-y-6"
+        className="w-full space-y-6"
       >
         {/* HERO BANNER */}
         <motion.div variants={item} className="bg-gradient-to-r from-[#F0FBF4] to-[#E8F5EE] rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between">
@@ -55,7 +57,7 @@ export default function Dashboard() {
                 />
               </svg>
               <div className="text-center z-10 flex items-baseline">
-                <span className="text-3xl font-bold text-[#166534]">81</span>
+                <span className="text-3xl font-bold text-[#166534]">{overallEsgScore}</span>
                 <span className="text-gray-400 font-medium">/100</span>
               </div>
             </div>
@@ -209,16 +211,16 @@ export default function Dashboard() {
               </div>
               <div className="flex-1 min-h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={DEPARTMENTS} layout="vertical" margin={{ top: 0, right: 20, bottom: 0, left: 30 }}>
+                  <BarChart data={activeDepartments} layout="vertical" margin={{ top: 0, right: 20, bottom: 0, left: 30 }}>
                     <XAxis type="number" domain={[0, 100]} hide />
                     <YAxis dataKey="code" type="category" stroke="transparent" tick={{ fill: '#9ca3af', fontSize: 12, fontWeight: 500 }} tickLine={false} axisLine={false} />
                     <Tooltip 
                       cursor={{ fill: '#F9FAF9' }}
                       contentStyle={{ backgroundColor: 'white', border: '1px solid #E8EDE6', borderRadius: '8px', fontSize: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}
                     />
-                    <Bar dataKey="score" radius={[0, 6, 6, 0]} barSize={20}>
-                      {DEPARTMENTS.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.score > 85 ? '#16a34a' : entry.score > 75 ? '#84cc16' : '#fbbf24'} />
+                    <Bar dataKey="esgOverall" radius={[0, 6, 6, 0]} barSize={20}>
+                      {activeDepartments.map((entry: any, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.esgOverall > 85 ? '#16a34a' : entry.esgOverall > 75 ? '#84cc16' : '#fbbf24'} />
                       ))}
                     </Bar>
                   </BarChart>

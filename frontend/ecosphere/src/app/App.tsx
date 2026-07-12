@@ -10,6 +10,7 @@ import Gamification from '@/modules/gamification/Gamification';
 import Reports from '@/modules/reports/Reports';
 import Settings from '@/modules/settings/Settings';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
+import { EcoSphereProvider } from '@/store/EcoSphereContext';
 
 const queryClient = new QueryClient();
 
@@ -31,12 +32,14 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <Router />
-        </WouterRouter>
-        <Toaster />
-      </TooltipProvider>
+      <EcoSphereProvider>
+        <TooltipProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+            <Router />
+          </WouterRouter>
+          <Toaster />
+        </TooltipProvider>
+      </EcoSphereProvider>
     </QueryClientProvider>
   );
 }
