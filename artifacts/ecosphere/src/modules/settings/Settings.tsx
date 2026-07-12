@@ -1,5 +1,5 @@
-import { AppLayout } from '@/components/layout/AppLayout';
-import { DEPARTMENTS } from '@/data/mock';
+import { AppLayout } from '@/app/AppLayout';
+import { DEPARTMENTS } from './data';
 import { motion } from 'framer-motion';
 import { Building2, Bell, Shield, Database, Plus, Mail } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

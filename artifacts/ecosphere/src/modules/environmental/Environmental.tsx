@@ -1,5 +1,5 @@
-import { AppLayout } from '@/components/layout/AppLayout';
-import { CARBON_TRANSACTIONS, SUSTAINABILITY_GOALS } from '@/data/mock';
+import { AppLayout } from '@/app/AppLayout';
+import { CARBON_TRANSACTIONS, SUSTAINABILITY_GOALS } from './data';
 import { motion } from 'framer-motion';
 import { Leaf, Droplets, Zap, Flame, Plus, Filter, Download } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

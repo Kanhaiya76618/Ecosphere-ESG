@@ -1,5 +1,5 @@
-import { AppLayout } from '@/components/layout/AppLayout';
-import { POLICIES, AUDITS, COMPLIANCE_ISSUES } from '@/data/mock';
+import { AppLayout } from '@/app/AppLayout';
+import { POLICIES, AUDITS, COMPLIANCE_ISSUES } from './data';
 import { motion } from 'framer-motion';
 import { ShieldCheck, AlertTriangle, FileCheck, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

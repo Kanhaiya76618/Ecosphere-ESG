@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AppLayout } from '@/components/layout/AppLayout';
+import { AppLayout } from '@/app/AppLayout';
 import {
   api,
   type Challenge,
   type ChallengeStatus,
   type Participation,
-} from '@/lib/api';
+} from './data';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import {

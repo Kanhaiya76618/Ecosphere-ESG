@@ -1,5 +1,5 @@
-import { AppLayout } from '@/components/layout/AppLayout';
-import { DASHBOARD_TREND, DEPARTMENTS, CARBON_TRANSACTIONS } from '@/data/mock';
+import { AppLayout } from '@/app/AppLayout';
+import { DASHBOARD_TREND, DEPARTMENTS, CARBON_TRANSACTIONS } from './data';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Cell

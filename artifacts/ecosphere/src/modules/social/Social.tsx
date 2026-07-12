@@ -1,5 +1,5 @@
-import { AppLayout } from '@/components/layout/AppLayout';
-import { CSR_ACTIVITIES, EMPLOYEE_APPROVALS } from '@/data/mock';
+import { AppLayout } from '@/app/AppLayout';
+import { CSR_ACTIVITIES, EMPLOYEE_APPROVALS } from './data';
 import { motion } from 'framer-motion';
 import { Users, Heart, Check, X, Calendar, MapPin, Award } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

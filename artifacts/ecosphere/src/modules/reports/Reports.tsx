@@ -1,4 +1,4 @@
-import { AppLayout } from '@/components/layout/AppLayout';
+import { AppLayout } from '@/app/AppLayout';
 import { motion } from 'framer-motion';
 import { FileText, Download, Filter, BarChart3, PieChart, FileSpreadsheet, Users } from 'lucide-react';
 
