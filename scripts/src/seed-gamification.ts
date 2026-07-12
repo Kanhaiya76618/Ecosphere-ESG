@@ -8,11 +8,13 @@ import {
   badgesTable,
   employeeBadgesTable,
   rewardsTable,
+  rewardRedemptionsTable,
   xpLedgerTable,
 } from "@workspace/db";
 
 async function seed() {
   console.log("Clearing gamification tables...");
+  await db.delete(rewardRedemptionsTable);
   await db.delete(employeeBadgesTable);
   await db.delete(xpLedgerTable);
   await db.delete(challengeParticipationsTable);
