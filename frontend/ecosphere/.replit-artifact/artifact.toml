@@ -2,7 +2,7 @@ kind = "web"
 previewPath = "/"
 title = "EcoSphere ESG Platform"
 version = "1.0.0"
-id = "artifacts/ecosphere"
+id = "frontend/ecosphere"
 router = "path"
 
 [[services]]
@@ -16,7 +16,7 @@ run = "pnpm --filter @workspace/ecosphere run dev"
 [services.production]
 build = [ "pnpm", "--filter", "@workspace/ecosphere", "run", "build" ]
 serve = "static"
-publicDir = "artifacts/ecosphere/dist/public"
+publicDir = "frontend/ecosphere/dist/public"
 
 [[services.production.rewrites]]
 from = "/*"

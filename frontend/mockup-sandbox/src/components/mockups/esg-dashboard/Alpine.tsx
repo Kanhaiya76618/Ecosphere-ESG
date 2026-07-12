@@ -32,7 +32,7 @@ const activities = [
   { id: 4, title: 'Carbon offset certificate uploaded', time: 'Jul 8', type: 'env', color: '#34C759' },
 ];
 
-const RingProgress = ({ value, label, color, size = 110, stroke = 8 }) => {
+const RingProgress = ({ value, label, color, size = 110, stroke = 8 }: { value: number; label: string; color: string; size?: number; stroke?: number }) => {
   const radius = size / 2;
   const normalizedRadius = radius - stroke * 1.5;
   const circumference = normalizedRadius * 2 * Math.PI;

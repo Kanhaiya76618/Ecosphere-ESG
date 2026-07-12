@@ -5,7 +5,7 @@ Odoo-style hackathon project: an ERP that tracks a company's Environmental impac
 ## Repo map
 
 ```
-artifacts/
+frontend/
   ecosphere/            React 19 + Vite frontend (the app)
     src/
       app/              Router (App.tsx), layout (AppLayout.tsx), not-found
@@ -28,6 +28,8 @@ artifacts/
                         social.ts, governance.ts, gamification.ts, settings.ts)
         utils.ts        cn() etc.
       hooks/            Shared hooks (use-toast, use-mobile)
+  mockup-sandbox/       Static design mockups (ESG dashboard variants). Not the app.
+backend/
   api-server/           Express 5 backend, bundled with esbuild
     src/
       index.ts          Bootstrap (reads PORT, starts app)
@@ -39,7 +41,6 @@ artifacts/
       services/         One file per module; business logic lives here, routes
                         stay thin (gamification.ts has xpBalance/evaluateBadges)
       db/               Re-exports the drizzle client + schema from lib/db
-  mockup-sandbox/       Static design mockups (ESG dashboard variants). Not the app.
 lib/
   db/                   Drizzle ORM + Postgres. Schema: src/schema/index.ts →
                         gamification.ts (real tables) + esg-skeletons.ts
@@ -111,5 +112,5 @@ Frontend dev server proxies `/api` → `http://localhost:5000` (see `vite.config
 - Schema files: one file per domain under `lib/db/src/schema/`, re-export from `index.ts`. Define Drizzle table + `createInsertSchema` + inferred types together.
 - `DATABASE_URL` is required by lib/db at import time; `PORT` required by api-server and vite; `BASE_PATH` required by vite.
 - api-server dev script = build + start (esbuild bundle), not watch mode — restart after changes.
-- Don't fight the Orval codegen (`lib/api-spec`); the Gamification frontend uses a plain fetch helper (`artifacts/ecosphere/src/lib/api.ts`) + TanStack Query.
+- Don't fight the Orval codegen (`lib/api-spec`); the Gamification frontend uses a plain fetch helper (`frontend/ecosphere/src/lib/api.ts`) + TanStack Query.
 - Demo flow (60s): create challenge → activate → join → submit proof → approve → XP in ledger → badge auto-unlocks → redeem reward → leaderboard updates.
