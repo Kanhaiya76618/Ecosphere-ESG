@@ -10,7 +10,7 @@ export class ApiError extends Error {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`/api/gamification${path}`, {
+  const res = await fetch(`/api${path}`, {
     headers: { 'content-type': 'application/json' },
     ...init,
   });
@@ -104,11 +104,33 @@ export interface Leaderboard {
   departments: { id: number; name: string; xp: number; members: number; rank: number }[];
 }
 
+export interface Department {
+  id: number;
+  name: string;
+  code: string;
+  head: string;
+  employees: number;
+  status: string;
+  score: number;
+}
+
+export interface Report {
+  id: number;
+  title: string;
+  framework: string;
+  dateRange: string;
+  pillar: string;
+  departmentId: number | null;
+  type: string;
+  size: string;
+  createdAt: string;
+}
+
 export const api = {
-  employees: () => request<Employee[]>('/employees'),
+  employees: () => request<Employee[]>('/gamification/employees'),
   employeeSummary: (id: number) =>
-    request<EmployeeSummary>(`/employees/${id}/summary`),
-  challenges: () => request<Challenge[]>('/challenges'),
+    request<EmployeeSummary>(`/gamification/employees/${id}/summary`),
+  challenges: () => request<Challenge[]>('/gamification/challenges'),
   createChallenge: (body: {
     title: string;
     category: string;
@@ -118,17 +140,17 @@ export const api = {
     evidenceRequired: string;
     deadline?: string | null;
   }) =>
-    request<Challenge>('/challenges', {
+    request<Challenge>('/gamification/challenges', {
       method: 'POST',
       body: JSON.stringify(body),
     }),
   transitionChallenge: (id: number, status: ChallengeStatus) =>
-    request<Challenge>(`/challenges/${id}/transition`, {
+    request<Challenge>(`/gamification/challenges/${id}/transition`, {
       method: 'POST',
       body: JSON.stringify({ status }),
     }),
   joinChallenge: (id: number, employeeId: number) =>
-    request<Participation>(`/challenges/${id}/join`, {
+    request<Participation>(`/gamification/challenges/${id}/join`, {
       method: 'POST',
       body: JSON.stringify({ employeeId }),
     }),
@@ -136,7 +158,7 @@ export const api = {
     id: number,
     body: { progress?: number; proof?: string },
   ) =>
-    request<Participation>(`/participations/${id}`, {
+    request<Participation>(`/gamification/participations/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(body),
     }),
@@ -145,16 +167,38 @@ export const api = {
       participation: Participation;
       xpAwarded: number;
       newBadges: { id: number; name: string }[];
-    }>(`/participations/${id}/review`, {
+    }>(`/gamification/participations/${id}/review`, {
       method: 'PATCH',
       body: JSON.stringify({ decision }),
     }),
-  badges: () => request<BadgeInfo[]>('/badges'),
-  rewards: () => request<Reward[]>('/rewards'),
+  badges: () => request<BadgeInfo[]>('/gamification/badges'),
+  rewards: () => request<Reward[]>('/gamification/rewards'),
   redeemReward: (id: number, employeeId: number) =>
     request<{ redemption: unknown; newBalance: number }>(
-      `/rewards/${id}/redeem`,
+      `/gamification/rewards/${id}/redeem`,
       { method: 'POST', body: JSON.stringify({ employeeId }) },
     ),
-  leaderboard: () => request<Leaderboard>('/leaderboard'),
+  leaderboard: () => request<Leaderboard>('/gamification/leaderboard'),
+  
+  // Settings Endpoints
+  departments: () => request<Department[]>('/settings/departments'),
+  createDepartment: (body: { name: string; code: string }) =>
+    request<Department>('/settings/departments', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+    
+  // Reports Endpoints
+  reports: () => request<Report[]>('/reports'),
+  generateReport: (body: {
+    framework: string;
+    dateRange: string;
+    pillar: string;
+    departmentId?: number | null;
+    type: string;
+  }) =>
+    request<Report>('/reports/generate', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
 };

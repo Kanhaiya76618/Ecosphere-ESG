@@ -1,18 +1,64 @@
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AppLayout } from '@/app/AppLayout';
-import { DEPARTMENTS } from './data';
+import { api, type Department } from './data';
 import { motion } from 'framer-motion';
 import { Building2, Bell, Shield, Database, Plus, Mail } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from '@/hooks/use-toast';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 
 export default function Settings() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [code, setCode] = useState('');
+
+  const { data: departments = [], isLoading } = useQuery({
+    queryKey: ['departments'],
+    queryFn: api.departments,
+  });
+
+  const createDeptMutation = useMutation({
+    mutationFn: api.createDepartment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['departments'] });
+      toast({
+        title: 'Department Created',
+        description: 'Organizational structure updated successfully.',
+      });
+      setIsOpen(false);
+      setName('');
+      setCode('');
+    },
+    onError: (err: any) => {
+      toast({
+        title: 'Error creating department',
+        description: err.message || String(err),
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name || !code) return;
+    createDeptMutation.mutate({ name, code });
+  };
+
   const container = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } }
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
   };
 
   return (
@@ -56,10 +102,54 @@ export default function Settings() {
                     <h3 className="text-lg font-bold text-gray-900">Organizational Structure</h3>
                     <p className="text-sm text-gray-500 mt-1">Manage departments and heads for accurate ESG reporting.</p>
                   </div>
-                  <button className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-800 rounded-lg text-sm font-semibold transition-colors shadow-sm shrink-0">
-                    <Plus className="w-4 h-4" />
-                    Add Dept
-                  </button>
+
+                  <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="flex items-center justify-center gap-2 px-4 py-2 bg-white hover:bg-gray-50 text-gray-800 border border-gray-200 rounded-lg text-sm font-semibold transition-colors shadow-sm shrink-0">
+                        <Plus className="w-4 h-4" />
+                        Add Dept
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Add Department</DialogTitle>
+                      </DialogHeader>
+                      <form onSubmit={handleSubmit} className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="name">Department Name</Label>
+                          <Input
+                            id="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="e.g. Finance"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="code">Department Code</Label>
+                          <Input
+                            id="code"
+                            value={code}
+                            onChange={(e) => setCode(e.target.value.toUpperCase())}
+                            placeholder="e.g. FIN"
+                            required
+                          />
+                        </div>
+                        <div className="flex justify-end gap-3 pt-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button type="submit" disabled={createDeptMutation.isPending}>
+                            {createDeptMutation.isPending ? 'Adding...' : 'Add Department'}
+                          </Button>
+                        </div>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
                 </div>
                 <div className="overflow-x-auto p-6">
                   <div className="border border-gray-100 rounded-xl overflow-hidden">
@@ -74,19 +164,33 @@ export default function Settings() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100">
-                        {DEPARTMENTS.map((dept) => (
-                          <tr key={dept.id} className="hover:bg-gray-50/50 transition-colors">
-                            <td className="px-5 py-4 font-bold text-gray-900">{dept.name}</td>
-                            <td className="px-5 py-4 font-mono font-medium text-gray-500 text-xs">{dept.code}</td>
-                            <td className="px-5 py-4 text-gray-600 font-medium">{dept.head}</td>
-                            <td className="px-5 py-4 text-right text-gray-600 font-medium">{dept.employees}</td>
-                            <td className="px-5 py-4 text-right">
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider bg-green-50 text-green-700 border border-green-200">
-                                {dept.status}
-                              </span>
+                        {isLoading ? (
+                          <tr>
+                            <td colSpan={5} className="text-center py-8 text-gray-400 font-medium">
+                              Loading organizational structure...
                             </td>
                           </tr>
-                        ))}
+                        ) : departments.length === 0 ? (
+                          <tr>
+                            <td colSpan={5} className="text-center py-8 text-gray-400 font-medium">
+                              No departments found.
+                            </td>
+                          </tr>
+                        ) : (
+                          departments.map((dept) => (
+                            <tr key={dept.id} className="hover:bg-gray-50/50 transition-colors">
+                              <td className="px-5 py-4 font-bold text-gray-900">{dept.name}</td>
+                              <td className="px-5 py-4 font-mono font-medium text-gray-500 text-xs">{dept.code}</td>
+                              <td className="px-5 py-4 text-gray-600 font-medium">{dept.head}</td>
+                              <td className="px-5 py-4 text-right text-gray-600 font-medium">{dept.employees}</td>
+                              <td className="px-5 py-4 text-right">
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider bg-green-50 text-green-700 border border-green-200">
+                                  {dept.status}
+                                </span>
+                              </td>
+                            </tr>
+                          ))
+                        )}
                       </tbody>
                     </table>
                   </div>

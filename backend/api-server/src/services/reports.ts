@@ -1,5 +1,17 @@
-// Business logic for the reports module lives here; routes stay thin.
-// Stub until the module is wired to real tables.
-export function getModuleStatus() {
-  return { module: "reports", status: "stub" } as const;
+import { desc } from "drizzle-orm";
+import { db, reportsTable, type InsertReport } from "../db";
+
+export async function getReports() {
+  return db
+    .select()
+    .from(reportsTable)
+    .orderBy(desc(reportsTable.createdAt));
+}
+
+export async function createReport(data: InsertReport) {
+  const [report] = await db
+    .insert(reportsTable)
+    .values(data)
+    .returning();
+  return report;
 }
